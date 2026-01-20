@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cyber Defender - Protect The System</title>
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="game-container">
+        <header class="game-header">
+            <div class="header-item">
+                <span class="label">SCORE</span>
+                <span id="score" class="value">0</span>
+            </div>
+            <div class="header-item title">
+                <h1>CYBER DEFENDER</h1>
+            </div>
+            <div class="header-item stats">
+                <div class="stat">
+                    <span class="label">LIVES</span>
+                    <span id="lives" class="value lives-display">❤️❤️❤️</span>
+                </div>
+                <div class="stat">
+                    <span class="label">LEVEL</span>
+                    <span id="level" class="value">1</span>
+                </div>
+            </div>
+        </header>
+        
+        <main class="game-area">
+            <canvas id="gameCanvas"></canvas>
+            
+            <!-- Start Screen -->
+            <div id="startScreen" class="overlay">
+                <div class="overlay-content">
+                    <h2>🛡️ CYBER DEFENDER 🛡️</h2>
+                    <p class="tagline">Protect The System From Cyber Threats</p>
+                    <div class="instructions">
+                        <p>⬅️ ➡️ Move your firewall</p>
+                        <p>SPACE to fire packets</p>
+                        <p>Answer questions to level up!</p>
+                    </div>
+                    <button id="startBtn" class="cyber-btn">INITIALIZE DEFENSE</button>
+                </div>
+            </div>
+            
+            <!-- Question Modal -->
+            <div id="questionModal" class="overlay hidden">
+                <div class="overlay-content question-content">
+                    <h3>🔐 SECURITY CHECKPOINT 🔐</h3>
+                    <p id="questionText" class="question-text"></p>
+                    <div id="answersContainer" class="answers-container"></div>
+                    <p id="questionFeedback" class="feedback"></p>
+                </div>
+            </div>
+            
+            <!-- Game Over Screen -->
+            <div id="gameOverScreen" class="overlay hidden">
+                <div class="overlay-content">
+                    <h2>💀 SYSTEM BREACHED 💀</h2>
+                    <p>Final Score: <span id="finalScore">0</span></p>
+                    <p>Level Reached: <span id="finalLevel">1</span></p>
+                    <button id="restartBtn" class="cyber-btn">REBOOT SYSTEM</button>
+                </div>
+            </div>
+            
+            <!-- Level Complete Screen -->
+            <div id="levelCompleteScreen" class="overlay hidden">
+                <div class="overlay-content">
+                    <h2>✅ WAVE CLEARED ✅</h2>
+                    <p>Preparing next wave...</p>
+                    <div class="loading-bar">
+                        <div class="loading-progress"></div>
+                    </div>
+                </div>
+            </div>
+        </main>
+        
+        <footer class="game-footer">
+            <div class="threat-indicator">
+                <span class="label">THREAT LEVEL:</span>
+                <div id="threatBar" class="threat-bar">
+                    <div id="threatLevel" class="threat-level"></div>
+                </div>
+            </div>
+        </footer>
+    </div>
+    
+    <script src="game.js"></script>
+</body>
+</html>
