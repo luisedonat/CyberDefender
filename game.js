@@ -142,210 +142,220 @@ const gameState = {
 };
 
 // ==========================================
-// CYBERSECURITY QUESTIONS
+// CYBERSECURITY QUESTIONS - Categorized by threat type
 // ==========================================
-const questions = [
-    {
-        question: "What does 'phishing' refer to in cybersecurity?",
-        answers: [
-            "A type of fishing game",
-            "Fraudulent attempts to obtain sensitive information",
-            "A network scanning tool",
-            "A firewall configuration"
-        ],
-        correct: 1
-    },
-    {
-        question: "What is a 'firewall' used for?",
-        answers: [
-            "Cooling down servers",
-            "Blocking unauthorized network access",
-            "Encrypting passwords",
-            "Backing up data"
-        ],
-        correct: 1
-    },
-    {
-        question: "What does 'malware' stand for?",
-        answers: [
-            "Malicious software",
-            "Male hardware",
-            "Main software",
-            "Managed software"
-        ],
-        correct: 0
-    },
-    {
-        question: "What is 'ransomware'?",
-        answers: [
-            "Software that backs up files",
-            "Malware that encrypts files and demands payment",
-            "A type of antivirus",
-            "A secure file sharing tool"
-        ],
-        correct: 1
-    },
-    {
-        question: "What is 'two-factor authentication' (2FA)?",
-        answers: [
-            "Using two passwords",
-            "Logging in from two devices",
-            "Requiring two forms of verification to access an account",
-            "Having two user accounts"
-        ],
-        correct: 2
-    },
-    {
-        question: "What is a 'DDoS attack'?",
-        answers: [
-            "Direct Download Service",
-            "Distributed Denial of Service attack",
-            "Data Deletion on Server",
-            "Digital Document System"
-        ],
-        correct: 1
-    },
-    {
-        question: "What is 'encryption'?",
-        answers: [
-            "Deleting sensitive data",
-            "Converting data into a coded format",
-            "Compressing files",
-            "Copying files to a backup"
-        ],
-        correct: 1
-    },
-    {
-        question: "What is a 'VPN' used for?",
-        answers: [
-            "Speeding up internet connection",
-            "Creating a secure, encrypted connection over the internet",
-            "Blocking advertisements",
-            "Increasing storage space"
-        ],
-        correct: 1
-    },
-    {
-        question: "What is 'social engineering' in cybersecurity?",
-        answers: [
-            "Building social media apps",
-            "Manipulating people to reveal confidential information",
-            "Engineering social networks",
-            "Creating user profiles"
-        ],
-        correct: 1
-    },
-    {
-        question: "What is a 'Trojan horse' in computing?",
-        answers: [
-            "A fast computer processor",
-            "Malware disguised as legitimate software",
-            "A type of firewall",
-            "An encryption method"
-        ],
-        correct: 1
-    },
-    {
-        question: "What does 'SQL injection' attack target?",
-        answers: [
-            "Email servers",
-            "Web databases",
-            "Hardware components",
-            "Network cables"
-        ],
-        correct: 1
-    },
-    {
-        question: "What is a 'zero-day vulnerability'?",
-        answers: [
-            "A bug that was fixed today",
-            "An unknown security flaw with no patch available",
-            "A vulnerability that lasts zero days",
-            "A testing period for software"
-        ],
-        correct: 1
-    },
-    {
-        question: "What is 'spyware'?",
-        answers: [
-            "Software that monitors user activity secretly",
-            "Anti-spy protection software",
-            "A type of firewall",
-            "Email encryption tool"
-        ],
-        correct: 0
-    },
-    {
-        question: "What is a 'botnet'?",
-        answers: [
-            "A network of chatbots",
-            "A network of infected computers controlled remotely",
-            "A robot network cable",
-            "An AI assistant"
-        ],
-        correct: 1
-    },
-    {
-        question: "What is 'keylogging'?",
-        answers: [
-            "Organizing keyboard shortcuts",
-            "Recording keystrokes to capture sensitive data",
-            "Locking keyboard keys",
-            "A keyboard testing method"
-        ],
-        correct: 1
-    },
-    {
-        question: "What is the purpose of a 'honeypot' in security?",
-        answers: [
-            "To store passwords",
-            "To attract and detect attackers",
-            "To encrypt files",
-            "To speed up networks"
-        ],
-        correct: 1
-    },
-    {
-        question: "What is 'brute force attack'?",
-        answers: [
-            "Physical attack on servers",
-            "Trying all possible password combinations",
-            "Forcing software updates",
-            "Breaking hardware"
-        ],
-        correct: 1
-    },
-    {
-        question: "What does 'HTTPS' provide compared to 'HTTP'?",
-        answers: [
-            "Faster loading",
-            "Encrypted communication",
-            "Better graphics",
-            "More storage"
-        ],
-        correct: 1
-    },
-    {
-        question: "What is a 'man-in-the-middle' attack?",
-        answers: [
-            "An attack from the server room",
-            "Intercepting communication between two parties",
-            "A physical security breach",
-            "A type of virus"
-        ],
-        correct: 1
-    },
-    {
-        question: "What is 'patch management'?",
-        answers: [
-            "Sewing computer cables",
-            "Regularly updating software to fix vulnerabilities",
-            "Managing network patches",
-            "Creating software patches for games"
-        ],
-        correct: 1
-    }
-];
+const questionsByCategory = {
+    VIRUS: [
+        {
+            question: "What is a computer virus?",
+            answers: [
+                "A type of hardware failure",
+                "An internet browser",
+                "A program that replicates by inserting copies into other programs",
+                "A cooling system for computers"
+            ],
+            correct: 2
+        },
+        {
+            question: "How do computer viruses typically spread?",
+            answers: [
+                "Through WiFi signals only",
+                "Through keyboard typing",
+                "Through monitor screens",
+                "Through infected files, email attachments, or downloads"
+            ],
+            correct: 3
+        },
+        {
+            question: "What is the best protection against viruses?",
+            answers: [
+                "Turning off the computer",
+                "Using antivirus software and keeping it updated",
+                "Using a larger monitor",
+                "Deleting all files"
+            ],
+            correct: 1
+        },
+        {
+            question: "What was one of the first computer viruses called?",
+            answers: [
+                "Heart",
+                "Lung",
+                "Liver",
+                "Brain"
+            ],
+            correct: 3
+        }
+    ],
+    MALWARE: [
+        {
+            question: "What does 'malware' stand for?",
+            answers: [
+                "Male hardware",
+                "Main software",
+                "Malicious software",
+                "Managed software"
+            ],
+            correct: 2
+        },
+        {
+            question: "Which of these is NOT a type of malware?",
+            answers: [
+                "Ransomware",
+                "Firmware",
+                "Spyware",
+                "Adware"
+            ],
+            correct: 1
+        },
+        {
+            question: "What is 'ransomware'?",
+            answers: [
+                "Software that backs up files",
+                "A type of antivirus",
+                "A secure file sharing tool",
+                "Malware that encrypts files and demands payment"
+            ],
+            correct: 3
+        },
+        {
+            question: "How can you protect against malware?",
+            answers: [
+                "Keep software updated and avoid suspicious downloads",
+                "Click on all email links to check them",
+                "Download software from any website",
+                "Share passwords with friends"
+            ],
+            correct: 0
+        }
+    ],
+    TROJAN: [
+        {
+            question: "What is a 'Trojan horse' in computing?",
+            answers: [
+                "A fast computer processor",
+                "A type of firewall",
+                "An encryption method",
+                "Malware disguised as legitimate software"
+            ],
+            correct: 3
+        },
+        {
+            question: "Why is it called a 'Trojan horse'?",
+            answers: [
+                "It hides malicious code inside something that appears safe",
+                "It was invented in Troy",
+                "It runs very fast like a horse",
+                "It makes horse sounds"
+            ],
+            correct: 0
+        },
+        {
+            question: "How do Trojans typically infect computers?",
+            answers: [
+                "Through automatic system updates",
+                "Through official app stores only",
+                "By users downloading fake or infected software",
+                "Through the power supply"
+            ],
+            correct: 2
+        },
+        {
+            question: "What can a Trojan do once installed?",
+            answers: [
+                "Only display advertisements",
+                "Speed up your computer",
+                "Create backdoors, steal data, or give attackers control",
+                "Improve internet connection"
+            ],
+            correct: 2
+        }
+    ],
+    WORM: [
+        {
+            question: "How is a worm different from a virus?",
+            answers: [
+                "Worms are slower",
+                "Worms only affect old computers",
+                "Worms are helpful programs",
+                "Worms can spread without user interaction"
+            ],
+            correct: 3
+        },
+        {
+            question: "What do computer worms primarily exploit to spread?",
+            answers: [
+                "Network vulnerabilities and connections",
+                "Keyboard inputs",
+                "Monitor brightness",
+                "Sound cards"
+            ],
+            correct: 0
+        },
+        {
+            question: "What was the 'ILOVEYOU' worm known for?",
+            answers: [
+                "Spreading love messages",
+                "Improving computer performance",
+                "Being one of the most damaging worms, spreading via email",
+                "Creating beautiful graphics"
+            ],
+            correct: 2
+        },
+        {
+            question: "What is a 'botnet' often created by worms?",
+            answers: [
+                "A network of chatbots",
+                "A helpful computer network",
+                "An AI assistant",
+                "A network of infected computers controlled remotely"
+            ],
+            correct: 3
+        }
+    ],
+    SPYWARE: [
+        {
+            question: "What is 'spyware'?",
+            answers: [
+                "Anti-spy protection software",
+                "A type of firewall",
+                "Software that monitors user activity secretly",
+                "Email encryption tool"
+            ],
+            correct: 2
+        },
+        {
+            question: "What is 'keylogging'?",
+            answers: [
+                "Organizing keyboard shortcuts",
+                "Locking keyboard keys",
+                "A keyboard testing method",
+                "Recording keystrokes to capture sensitive data"
+            ],
+            correct: 3
+        },
+        {
+            question: "What information might spyware collect?",
+            answers: [
+                "Passwords, browsing history, and personal data",
+                "Only your wallpaper settings",
+                "Just your computer's color scheme",
+                "Only the time and date"
+            ],
+            correct: 0
+        },
+        {
+            question: "How can spyware get installed on your computer?",
+            answers: [
+                "Only through physical access",
+                "Through official Windows updates",
+                "Bundled with free software, phishing, or malicious websites",
+                "By using too much RAM"
+            ],
+            correct: 2
+        }
+    ]
+};
 
 // ==========================================
 // THREAT TYPES (Enemies) - 5 types
@@ -843,8 +853,9 @@ function showQuestion(eliminatedThreatType) {
     const answersContainer = document.getElementById('answersContainer');
     const feedback = document.getElementById('questionFeedback');
     
-    // Get random question
-    const question = questions[Math.floor(Math.random() * questions.length)];
+    // Get random question from the matching category
+    const categoryQuestions = questionsByCategory[eliminatedThreatType];
+    const question = categoryQuestions[Math.floor(Math.random() * categoryQuestions.length)];
     
     // Shuffle answers randomly
     const { shuffledAnswers, correctIndex } = shuffleAnswers(question.answers, question.correct);
