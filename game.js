@@ -438,6 +438,7 @@ function initGame() {
     gameState.level = 1;
     gameState.threatsDestroyed = 0;
     gameState.questionPending = false;
+    gameState.respawnCount = {}; // Track respawn count per threat type
     eliminatedTypes = new Set();
     
     player.x = canvas.width / 2 - 30;
@@ -853,6 +854,9 @@ function showQuestion(eliminatedThreatType) {
     const answersContainer = document.getElementById('answersContainer');
     const feedback = document.getElementById('questionFeedback');
     
+    // Store current threat type for potential respawn
+    gameState.currentQuestionThreat = eliminatedThreatType;
+    
     // Get random question from the matching category
     const categoryQuestions = questionsByCategory[eliminatedThreatType];
     const question = categoryQuestions[Math.floor(Math.random() * categoryQuestions.length)];
@@ -882,6 +886,51 @@ function showQuestion(eliminatedThreatType) {
     modal.classList.remove('hidden');
 }
 
+function respawnThreatType(threatTypeName) {
+    // Find the threat type object
+    const threatType = threatTypes.find(t => t.name === threatTypeName);
+    if (!threatType) return;
+    
+    // Remove from eliminated types so question can trigger again
+    eliminatedTypes.delete(threatTypeName);
+    
+    // Track respawn count for this threat type
+    if (!gameState.respawnCount[threatTypeName]) {
+        gameState.respawnCount[threatTypeName] = 0;
+    }
+    gameState.respawnCount[threatTypeName]++;
+    
+    // Find the row index for this threat type
+    const rowIndex = threatTypes.findIndex(t => t.name === threatTypeName);
+    
+    // Respawn positions - each respawn appears 60px lower
+    const startX = 150;
+    const baseStartY = 50;
+    const respawnPenalty = gameState.respawnCount[threatTypeName] * 60; // 60px lower each time
+    const startY = baseStartY + respawnPenalty;
+    const spacingX = 100;
+    const spacingY = 55;
+    const cols = 4;
+    
+    // Cap the respawn height so they don't spawn on top of the player
+    const maxY = player.y - 150;
+    const actualY = Math.min(startY + rowIndex * spacingY, maxY);
+    
+    // Respawn all 4 enemies of this type
+    for (let col = 0; col < cols; col++) {
+        enemies.push({
+            x: startX + col * spacingX,
+            y: actualY,
+            width: 50,
+            height: 35,
+            type: threatType,
+            alive: true
+        });
+    }
+    
+    updateThreatBar();
+}
+
 function handleAnswer(selected, correct, button) {
     const feedback = document.getElementById('questionFeedback');
     const buttons = document.querySelectorAll('.answer-btn');
@@ -897,14 +946,19 @@ function handleAnswer(selected, correct, button) {
     
     if (selected === correct) {
         playSound('correct');
-        feedback.textContent = '✓ CORRECT! +50 BONUS POINTS';
+        feedback.textContent = '✓ CORRECT! +50 BONUS POINTS - Defense secured!';
         feedback.className = 'feedback correct';
         gameState.score += 50;
         updateUI();
     } else {
         playSound('incorrect');
-        feedback.textContent = '✗ INCORRECT! The right answer is highlighted.';
+        const timesRespawned = (gameState.respawnCount[gameState.currentQuestionThreat] || 0) + 1;
+        feedback.textContent = `✗ INCORRECT! ${gameState.currentQuestionThreat} threats return closer! (×${timesRespawned})`;
         feedback.className = 'feedback incorrect';
+        // Respawn the threat type after a short delay
+        setTimeout(() => {
+            respawnThreatType(gameState.currentQuestionThreat);
+        }, 1000);
     }
     
     // Continue game after delay
@@ -915,7 +969,7 @@ function handleAnswer(selected, correct, button) {
         
         // Check if wave is complete after question
         checkWaveComplete();
-    }, 2000);
+    }, 2500);
 }
 
 // ==========================================
