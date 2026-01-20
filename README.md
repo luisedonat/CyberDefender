@@ -2,8 +2,6 @@
 
 A cybersecurity-themed Space Invaders game where you defend your system against incoming cyber threats!
 
-![Game Screenshot](screenshot.png)
-
 ## 🎮 Gameplay
 
 - **Defend** your firewall against waves of cyber threats
