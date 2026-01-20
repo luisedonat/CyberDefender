@@ -9,7 +9,18 @@ A cybersecurity-themed Space Invaders game where you defend your system against 
 - **Answer** cybersecurity quiz questions when you eliminate all threats of a type
 - **Level up** through increasingly difficult waves
 
-## 🕹️ Controls
+## � Defense Protocol
+
+Each wave contains **5 different threat types**, with **4 instances of each**. Threats of the same type are grouped together in rows.
+
+**To activate a defense protocol against a specific threat:**
+1. Eliminate all 4 instances of that threat type
+2. A **Security Checkpoint** will appear with a cybersecurity question
+3. Answer correctly to earn bonus points and strengthen your defenses!
+
+*Example: Destroy all 4 🦠 Virus blocks to trigger a quiz about that security threat.*
+
+## �🕹️ Controls
 
 | Key | Action |
 |-----|--------|

@@ -40,7 +40,8 @@
                     <div class="instructions">
                         <p>⬅️ ➡️ Move your firewall</p>
                         <p>SPACE to fire packets</p>
-                        <p>Answer questions to level up!</p>
+                        <p class="highlight">Destroy all 4 threats of the same type to activate a defense protocol!</p>
+                        <p>Answer security questions to earn bonus points</p>
                     </div>
                     <button id="startBtn" class="cyber-btn">INITIALIZE DEFENSE</button>
                 </div>
@@ -63,6 +64,17 @@
                     <p>Final Score: <span id="finalScore">0</span></p>
                     <p>Level Reached: <span id="finalLevel">1</span></p>
                     <button id="restartBtn" class="cyber-btn">REBOOT SYSTEM</button>
+                </div>
+            </div>
+            
+            <!-- Victory Screen -->
+            <div id="victoryScreen" class="overlay hidden">
+                <div class="overlay-content victory-content">
+                    <h2>🏆 SYSTEM SECURED 🏆</h2>
+                    <p class="victory-message">All cyber threats neutralized!</p>
+                    <p>Final Score: <span id="victoryScore">0</span></p>
+                    <p class="victory-congrats">You are a true Cyber Defender!</p>
+                    <button id="victoryRestartBtn" class="cyber-btn victory-btn">DEFEND AGAIN</button>
                 </div>
             </div>
             

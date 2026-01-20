@@ -10,6 +10,125 @@ canvas.width = 800;
 canvas.height = 600;
 
 // ==========================================
+// AUDIO SYSTEM
+// ==========================================
+const AudioContext = window.AudioContext || window.webkitAudioContext;
+let audioCtx = null;
+
+function initAudio() {
+    if (!audioCtx) {
+        audioCtx = new AudioContext();
+    }
+}
+
+function playSound(type) {
+    if (!audioCtx) return;
+    
+    const oscillator = audioCtx.createOscillator();
+    const gainNode = audioCtx.createGain();
+    
+    oscillator.connect(gainNode);
+    gainNode.connect(audioCtx.destination);
+    
+    const now = audioCtx.currentTime;
+    
+    switch(type) {
+        case 'shoot':
+            // Laser/pew sound - high pitched short beep
+            oscillator.type = 'square';
+            oscillator.frequency.setValueAtTime(880, now);
+            oscillator.frequency.exponentialRampToValueAtTime(220, now + 0.1);
+            gainNode.gain.setValueAtTime(0.15, now);
+            gainNode.gain.exponentialRampToValueAtTime(0.01, now + 0.1);
+            oscillator.start(now);
+            oscillator.stop(now + 0.1);
+            break;
+            
+        case 'enemyDestroyed':
+            // Explosion sound - noise burst with pitch drop
+            oscillator.type = 'sawtooth';
+            oscillator.frequency.setValueAtTime(400, now);
+            oscillator.frequency.exponentialRampToValueAtTime(50, now + 0.2);
+            gainNode.gain.setValueAtTime(0.2, now);
+            gainNode.gain.exponentialRampToValueAtTime(0.01, now + 0.2);
+            oscillator.start(now);
+            oscillator.stop(now + 0.2);
+            break;
+            
+        case 'playerHit':
+            // Damage sound - low rumble with distortion feel
+            oscillator.type = 'sawtooth';
+            oscillator.frequency.setValueAtTime(150, now);
+            oscillator.frequency.exponentialRampToValueAtTime(30, now + 0.4);
+            gainNode.gain.setValueAtTime(0.3, now);
+            gainNode.gain.exponentialRampToValueAtTime(0.01, now + 0.4);
+            oscillator.start(now);
+            oscillator.stop(now + 0.4);
+            
+            // Add a second oscillator for richer damage sound
+            const osc2 = audioCtx.createOscillator();
+            const gain2 = audioCtx.createGain();
+            osc2.connect(gain2);
+            gain2.connect(audioCtx.destination);
+            osc2.type = 'square';
+            osc2.frequency.setValueAtTime(100, now);
+            osc2.frequency.exponentialRampToValueAtTime(20, now + 0.3);
+            gain2.gain.setValueAtTime(0.2, now);
+            gain2.gain.exponentialRampToValueAtTime(0.01, now + 0.3);
+            osc2.start(now);
+            osc2.stop(now + 0.3);
+            break;
+            
+        case 'gameOver':
+            // Game over - descending tone
+            oscillator.type = 'square';
+            oscillator.frequency.setValueAtTime(440, now);
+            oscillator.frequency.exponentialRampToValueAtTime(55, now + 1);
+            gainNode.gain.setValueAtTime(0.25, now);
+            gainNode.gain.exponentialRampToValueAtTime(0.01, now + 1);
+            oscillator.start(now);
+            oscillator.stop(now + 1);
+            break;
+            
+        case 'levelComplete':
+            // Victory jingle - ascending tones
+            oscillator.type = 'square';
+            oscillator.frequency.setValueAtTime(523, now); // C5
+            oscillator.frequency.setValueAtTime(659, now + 0.1); // E5
+            oscillator.frequency.setValueAtTime(784, now + 0.2); // G5
+            oscillator.frequency.setValueAtTime(1047, now + 0.3); // C6
+            gainNode.gain.setValueAtTime(0.15, now);
+            gainNode.gain.setValueAtTime(0.15, now + 0.3);
+            gainNode.gain.exponentialRampToValueAtTime(0.01, now + 0.5);
+            oscillator.start(now);
+            oscillator.stop(now + 0.5);
+            break;
+            
+        case 'correct':
+            // Correct answer - happy ding
+            oscillator.type = 'sine';
+            oscillator.frequency.setValueAtTime(880, now);
+            oscillator.frequency.setValueAtTime(1100, now + 0.1);
+            gainNode.gain.setValueAtTime(0.2, now);
+            gainNode.gain.exponentialRampToValueAtTime(0.01, now + 0.3);
+            oscillator.start(now);
+            oscillator.stop(now + 0.3);
+            break;
+            
+        case 'incorrect':
+            // Wrong answer - buzzer
+            oscillator.type = 'sawtooth';
+            oscillator.frequency.setValueAtTime(150, now);
+            oscillator.frequency.setValueAtTime(100, now + 0.15);
+            gainNode.gain.setValueAtTime(0.2, now);
+            gainNode.gain.exponentialRampToValueAtTime(0.01, now + 0.3);
+            oscillator.start(now);
+            oscillator.stop(now + 0.3);
+            break;
+    }
+}
+
+// ==========================================
 // GAME STATE
 // ==========================================
 const gameState = {
@@ -332,7 +451,19 @@ function createEnemyWave() {
     const spacingX = 100;
     const spacingY = 55;
     
-    enemySpeed = 0.5 + (gameState.level * 0.15);
+    // Level-based difficulty (3 levels total)
+    // Level 1: Slow and easy
+    // Level 2: Medium speed
+    // Level 3: Fast and challenging
+    const levelSettings = {
+        1: { speed: 0.4, dropAmount: 12 },
+        2: { speed: 0.6, dropAmount: 15 },
+        3: { speed: 0.9, dropAmount: 18 }
+    };
+    
+    const settings = levelSettings[gameState.level] || levelSettings[3];
+    enemySpeed = settings.speed;
+    enemyDropAmount = settings.dropAmount;
     enemyDirection = 1;
     
     for (let row = 0; row < rows; row++) {
@@ -518,6 +649,7 @@ function shoot() {
         x: player.x + player.width / 2,
         y: player.y
     });
+    playSound('shoot');
     canShoot = false;
     setTimeout(() => canShoot = true, shootCooldown);
 }
@@ -563,8 +695,10 @@ function updateEnemies() {
         gameOver();
     }
     
-    // Enemy shooting
-    if (Math.random() < 0.02 * (1 + gameState.level * 0.1)) {
+    // Enemy shooting - difficulty scales with level
+    // Level 1: 0.5% chance, Level 2: 0.8% chance, Level 3: 1.2% chance
+    const shootChance = 0.005 + (gameState.level - 1) * 0.0035;
+    if (Math.random() < shootChance) {
         const aliveEnemies = enemies.filter(e => e.alive);
         if (aliveEnemies.length > 0) {
             const shooter = aliveEnemies[Math.floor(Math.random() * aliveEnemies.length)];
@@ -614,6 +748,7 @@ function checkCollisions() {
                 gameState.score += enemy.type.points;
                 gameState.threatsDestroyed++;
                 
+                playSound('enemyDestroyed');
                 createExplosion(enemy.x + enemy.width / 2, enemy.y + enemy.height / 2, enemy.type.color);
                 updateUI();
                 updateThreatBar();
@@ -636,6 +771,7 @@ function playerHit() {
     gameState.lives--;
     updateUI();
     
+    playSound('playerHit');
     createExplosion(player.x + player.width / 2, player.y + player.height / 2, '#ff0000');
     
     if (gameState.lives <= 0) {
@@ -679,6 +815,26 @@ function updateThreatBar() {
 // QUESTION SYSTEM
 // ==========================================
 
+function shuffleAnswers(answers, correctIndex) {
+    // Create array of {answer, isCorrect} objects
+    const answerObjects = answers.map((answer, index) => ({
+        answer: answer,
+        isCorrect: index === correctIndex
+    }));
+    
+    // Fisher-Yates shuffle
+    for (let i = answerObjects.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [answerObjects[i], answerObjects[j]] = [answerObjects[j], answerObjects[i]];
+    }
+    
+    // Find new correct index
+    const newCorrectIndex = answerObjects.findIndex(obj => obj.isCorrect);
+    const shuffledAnswers = answerObjects.map(obj => obj.answer);
+    
+    return { shuffledAnswers, correctIndex: newCorrectIndex };
+}
+
 function showQuestion(eliminatedThreatType) {
     gameState.isPaused = true;
     
@@ -689,6 +845,9 @@ function showQuestion(eliminatedThreatType) {
     
     // Get random question
     const question = questions[Math.floor(Math.random() * questions.length)];
+    
+    // Shuffle answers randomly
+    const { shuffledAnswers, correctIndex } = shuffleAnswers(question.answers, question.correct);
     
     // Show which threat type was eliminated
     const threatInfo = document.createElement('p');
@@ -701,11 +860,11 @@ function showQuestion(eliminatedThreatType) {
     feedback.textContent = '';
     feedback.className = 'feedback';
     
-    question.answers.forEach((answer, index) => {
+    shuffledAnswers.forEach((answer, index) => {
         const btn = document.createElement('button');
         btn.className = 'answer-btn';
         btn.textContent = `${String.fromCharCode(65 + index)}) ${answer}`;
-        btn.addEventListener('click', () => handleAnswer(index, question.correct, btn));
+        btn.addEventListener('click', () => handleAnswer(index, correctIndex, btn));
         answersContainer.appendChild(btn);
     });
     
@@ -726,11 +885,13 @@ function handleAnswer(selected, correct, button) {
     });
     
     if (selected === correct) {
+        playSound('correct');
         feedback.textContent = '✓ CORRECT! +50 BONUS POINTS';
         feedback.className = 'feedback correct';
         gameState.score += 50;
         updateUI();
     } else {
+        playSound('incorrect');
         feedback.textContent = '✗ INCORRECT! The right answer is highlighted.';
         feedback.className = 'feedback incorrect';
     }
@@ -752,6 +913,13 @@ function handleAnswer(selected, correct, button) {
 
 function levelComplete() {
     gameState.isPaused = true;
+    playSound('levelComplete');
+    
+    // Check if player completed all 3 levels
+    if (gameState.level >= 3) {
+        gameVictory();
+        return;
+    }
     
     const screen = document.getElementById('levelCompleteScreen');
     screen.classList.remove('hidden');
@@ -773,8 +941,16 @@ function levelComplete() {
     }, 2500);
 }
 
+function gameVictory() {
+    gameState.isRunning = false;
+    
+    document.getElementById('victoryScore').textContent = gameState.score;
+    document.getElementById('victoryScreen').classList.remove('hidden');
+}
+
 function gameOver() {
     gameState.isRunning = false;
+    playSound('gameOver');
     
     document.getElementById('finalScore').textContent = gameState.score;
     document.getElementById('finalLevel').textContent = gameState.level;
@@ -782,8 +958,10 @@ function gameOver() {
 }
 
 function startGame() {
+    initAudio();
     document.getElementById('startScreen').classList.add('hidden');
     document.getElementById('gameOverScreen').classList.add('hidden');
+    document.getElementById('victoryScreen').classList.add('hidden');
     initGame();
     gameState.isRunning = true;
     gameLoop();
@@ -826,6 +1004,7 @@ function gameLoop() {
 
 document.getElementById('startBtn').addEventListener('click', startGame);
 document.getElementById('restartBtn').addEventListener('click', startGame);
+document.getElementById('victoryRestartBtn').addEventListener('click', startGame);
 
 // Initial draw
 ctx.fillStyle = '#000510';
